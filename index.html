@@ -150,7 +150,7 @@
             .cat-btn {
                 padding: 8px 16px;
                 font-size: 0.85rem;
-                flex-grow: 1; /* Make buttons expand to fill gaps nicely */
+                flex-grow: 1; 
                 text-align: center;
             }
         }
@@ -344,17 +344,6 @@
         .theme-icecream .price-badge { color: #9a3412; }
 
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.1",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
-    "react/": "https://esm.sh/react@^19.2.1/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.560.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
 
@@ -578,7 +567,7 @@
         // --- State ---
         let activeCategory = "Cakes";
         let searchTerm = "";
-        let cart = []; // Cart items now store a 'quantity' property (always 1 initially, adjusted in cart modal)
+        let cart = []; // Each item now includes a 'quantity' property
         let cartModalInstance = null;
 
         // --- Initialization ---
@@ -586,7 +575,11 @@
             renderCategories();
             renderMenu();
             setupSearchListeners();
-            cartModalInstance = new bootstrap.Modal(document.getElementById('cartModal'));
+            // Initialize the Bootstrap Modal instance
+            const cartModalEl = document.getElementById('cartModal');
+            if (cartModalEl) {
+                cartModalInstance = new bootstrap.Modal(cartModalEl);
+            }
         });
 
         // --- Rendering Logic ---
@@ -664,7 +657,7 @@
                     variantsHtml = `<div class="mb-3"><span class="badge bg-light text-secondary border fw-normal opacity-50 px-2 py-1" style="font-size: 0.7rem;">${item.category}</span></div>`;
                 }
 
-                // *** START MODIFICATION FOR QUANTITY SELECTION ***
+                // Initial quantity is always 1 for the data attribute
                 return `
                     <div class="col ${themeClass}">
                         <div class="menu-card" id="card-${item.id}" data-selected-variant-idx="0" data-selected-quantity="1">
@@ -692,6 +685,7 @@
                                             <i class="bi bi-plus"></i>
                                         </button>
                                     </div>
+
                                     <button class="add-btn" onclick="addToCart('${item.id}')">
                                         <i class="bi bi-plus-lg"></i> Add
                                     </button>
@@ -700,7 +694,6 @@
                         </div>
                     </div>
                 `;
-                // *** END MODIFICATION FOR QUANTITY SELECTION ***
             }).join('');
         }
 
@@ -735,17 +728,20 @@
                 toggleClearButton(e.target.id, btnId);
                 renderMenu();
             };
-            document.getElementById('desktop-search').addEventListener('input', handleSearch);
-            document.getElementById('mobile-search').addEventListener('input', handleSearch);
+            // Added check to ensure elements exist before adding listeners
+            document.getElementById('desktop-search')?.addEventListener('input', handleSearch);
+            document.getElementById('mobile-search')?.addEventListener('input', handleSearch);
         }
 
         function toggleClearButton(inputId, btnId) {
             const input = document.getElementById(inputId);
             const btn = document.getElementById(btnId);
-            if (input.value.length > 0) {
-                btn.classList.remove('d-none');
-            } else {
-                btn.classList.add('d-none');
+            if (input && btn) {
+                if (input.value.length > 0) {
+                    btn.classList.remove('d-none');
+                } else {
+                    btn.classList.add('d-none');
+                }
             }
         }
 
@@ -762,27 +758,31 @@
         function selectVariant(itemId, variantIdx, price) {
             // Update UI State
             const card = document.getElementById(`card-${itemId}`);
+            if (!card) return;
             card.dataset.selectedVariantIdx = variantIdx;
             
             // Update Price Display
             const priceTag = document.getElementById(`price-${itemId}`);
-            priceTag.textContent = `₹${price}`;
+            if(priceTag) priceTag.textContent = `₹${price}`;
 
             // Update Buttons Style
             const container = document.getElementById(`variants-${itemId}`);
-            const buttons = container.getElementsByClassName('variant-btn');
-            Array.from(buttons).forEach((btn, idx) => {
-                if(idx === variantIdx) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
+            if (container) {
+                const buttons = container.getElementsByClassName('variant-btn');
+                Array.from(buttons).forEach((btn, idx) => {
+                    if(idx === variantIdx) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                });
+            }
         }
 
-        // *** NEW FUNCTION: Manage quantity display on the menu card ***
+        // ** Corrected Function to manage quantity display on the menu card **
         function changeCardQuantity(itemId, change) {
             const card = document.getElementById(`card-${itemId}`);
             const qtyDisplay = document.getElementById(`qty-display-${itemId}`);
-            let currentQty = parseInt(card.dataset.selectedQuantity);
+            if (!card || !qtyDisplay) return;
 
+            let currentQty = parseInt(card.dataset.selectedQuantity || 1);
             let newQty = currentQty + change;
             
             // Quantity safety check: must be at least 1
@@ -794,19 +794,18 @@
             card.dataset.selectedQuantity = newQty;
             qtyDisplay.textContent = newQty;
         }
-        // *** END NEW FUNCTION ***
 
 
         function addToCart(itemId) {
             const item = MENU_ITEMS.find(i => i.id === itemId);
             const card = document.getElementById(`card-${itemId}`);
+            if (!item || !card) return;
             
             let selectedVariant = null;
             let finalPrice = item.price;
             
             // Get selected quantity from the card's data attribute
-            const selectedQuantity = parseInt(card.dataset.selectedQuantity); 
-
+            const selectedQuantity = parseInt(card.dataset.selectedQuantity || 1); 
 
             if (item.variants) {
                 const idx = parseInt(card.dataset.selectedVariantIdx || 0);
@@ -815,7 +814,6 @@
             }
 
             // Add the item to the cart, using the selectedQuantity
-            // Note: We use the quantity property here to track multiples
             cart.push({
                 itemId: item.id,
                 name: item.name,
@@ -829,6 +827,8 @@
             // Visual feedback
             const btn = card.querySelector('.add-btn');
             const originalHTML = btn.innerHTML;
+            
+            // Show the quantity that was added in the feedback
             btn.innerHTML = `<i class="bi bi-check-lg"></i> Added (${selectedQuantity})`;
             btn.style.backgroundColor = '#25D366';
             btn.style.color = 'white';
@@ -878,7 +878,7 @@
             emptyMsg.classList.add('d-none');
             footer.classList.remove('d-none');
 
-            // Calculate Grand Total (price * quantity)
+            // Calculate Grand Total (sum of price * quantity)
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             totalEl.textContent = total;
 
@@ -914,7 +914,7 @@
             }).join('');
         }
 
-        // *** NEW/UPDATED FUNCTION: Manage quantity in cart modal ***
+        // ** Corrected Function to manage quantity in cart modal **
         function updateQuantity(index, change) {
             if (index >= 0 && index < cart.length) {
                 const currentQty = cart[index].quantity;
@@ -924,9 +924,9 @@
                     if (currentQty > 1) {
                         cart[index].quantity--;
                     } else {
-                        // Remove item if quantity drops to zero
+                        // Remove item if quantity drops to 1 and we try to decrease it
                         removeFromCart(index);
-                        return;
+                        return; // Exit function after removal
                     }
                 } 
                 // Increase quantity
@@ -938,7 +938,6 @@
                 renderCartItems();
             }
         }
-        // *** END NEW/UPDATED FUNCTION ***
 
         function removeFromCart(index) {
             cart.splice(index, 1);
@@ -946,6 +945,7 @@
             renderCartItems();
         }
 
+        // ** UPDATED FUNCTION: Includes logic to reset state after checkout **
         function handleCheckout(e) {
             e.preventDefault();
             
@@ -955,7 +955,6 @@
             
             if (cart.length === 0) return;
 
-            // Calculate total using quantity property
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             // Construct Message
@@ -969,7 +968,6 @@
             cart.forEach((item, index) => {
                 const variantText = item.selectedVariant ? ` (${item.selectedVariant.label})` : '';
                 message += `${index + 1}. ${item.name}${variantText}\n`;
-                // Include the quantity in the WhatsApp message
                 message += `   Price: ₹${item.price} | *Qty: ${item.quantity}*\n`;
             });
 
@@ -979,8 +977,24 @@
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/916383152819?text=${encodedMessage}`;
 
-
+            // 1. Open WhatsApp URL in a new window/tab
             window.open(whatsappUrl, '_blank');
+            
+            // 2. State cleanup for better UX when user returns/closes the tab
+            
+            // A. Clear the cart state
+            cart = [];
+
+            // B. Update the cart count badge
+            updateCartCount(); 
+
+            // C. Clear the customer input fields
+            document.getElementById('customer-name').value = '';
+            document.getElementById('customer-contact').value = '';
+            document.getElementById('type-takeaway').checked = true; // Reset order type
+
+            // D. Close the cart modal
+            cartModalInstance.hide();
         }
 
     </script>
