@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WALFFMELLO | Premium Ordering</title>
     
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
 
     <style>
@@ -361,10 +358,8 @@
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand navbar-light navbar-glass sticky-top mb-4 py-3">
         <div class="container-xl">
-            <!-- Brand -->
             <a class="navbar-brand d-flex align-items-center gap-3" href="#">
                 <div class="bg-dark text-white p-2 rounded-4 shadow-sm d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
                     <i class="bi bi-cup-hot-fill fs-5"></i>
@@ -375,7 +370,6 @@
                 </div>
             </a>
 
-            <!-- Desktop Search -->
             <div class="d-none d-md-block flex-grow-1 mx-5" style="max-width: 500px;">
                 <div class="search-container">
                     <i class="bi bi-search search-icon"></i>
@@ -386,7 +380,6 @@
                 </div>
             </div>
 
-            <!-- Cart Trigger -->
             <button class="cart-float-btn ms-auto ms-md-0" onclick="openCart()">
                 <i class="bi bi-bag-fill fs-5 text-dark"></i>
                 <span id="cart-count" class="cart-badge d-none">0</span>
@@ -396,7 +389,6 @@
 
     <div class="container-xl px-4">
         
-        <!-- Hero Section (Welcome) -->
         <div class="hero-card mb-5 d-none d-md-block">
             <div class="hero-pattern"></div>
             <div class="row align-items-center position-relative z-1">
@@ -411,7 +403,6 @@
             </div>
         </div>
 
-        <!-- Mobile Search -->
         <div class="d-md-none mb-4">
             <div class="search-container">
                 <i class="bi bi-search search-icon"></i>
@@ -422,14 +413,11 @@
             </div>
         </div>
 
-        <!-- Categories -->
         <div class="mb-4">
             <div id="category-container" class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                <!-- Categories injected by JS -->
-            </div>
+                </div>
         </div>
 
-        <!-- Section Title -->
         <div class="d-flex align-items-end gap-3 mb-4 mt-2">
             <div>
                 <div class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1.5px;">Currently Viewing</div>
@@ -438,12 +426,9 @@
             <div class="border-bottom flex-grow-1 mb-2 opacity-25 border-dark"></div>
         </div>
 
-        <!-- Menu Grid -->
         <div id="menu-grid" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
-            <!-- Menu Items injected by JS -->
-        </div>
+            </div>
 
-        <!-- Empty State (Hidden by default) -->
         <div id="empty-state" class="text-center py-5 d-none">
             <div class="bg-white d-inline-block p-5 rounded-circle mb-4 shadow-sm">
                 <i class="bi bi-emoji-frown fs-1 text-muted"></i>
@@ -454,11 +439,9 @@
         </div>
     </div>
 
-    <!-- Cart Modal -->
     <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content shadow-lg">
-                <!-- Header -->
                 <div class="modal-header border-0">
                     <div class="d-flex align-items-center gap-3">
                         <div class="bg-white bg-opacity-25 p-2 rounded-3">
@@ -472,11 +455,9 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <!-- Body -->
                 <div class="modal-body bg-light p-0">
                     <div id="cart-items-container" class="p-3">
-                        <!-- Cart Items injected here -->
-                    </div>
+                        </div>
                     
                     <div id="cart-empty-msg" class="text-center py-5 d-none">
                         <div class="mb-3 opacity-25">
@@ -488,7 +469,6 @@
                     </div>
                 </div>
 
-                <!-- Footer -->
                 <div id="cart-footer" class="modal-footer flex-column align-items-stretch border-top-0 p-4 bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
                     <div class="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom border-dashed">
                         <span class="text-muted small fw-bold text-uppercase tracking-wider">Total Amount</span>
@@ -530,10 +510,8 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Application Script -->
     <script>
         // --- Constants & Data ---
         const CATEGORIES = ["Cakes", "Beverages", "Add-ons", "Fries & Sides", "Ice Creams"];
@@ -600,7 +578,7 @@
         // --- State ---
         let activeCategory = "Cakes";
         let searchTerm = "";
-        let cart = [];
+        let cart = []; // Cart items now store a 'quantity' property (always 1 initially, adjusted in cart modal)
         let cartModalInstance = null;
 
         // --- Initialization ---
@@ -686,9 +664,10 @@
                     variantsHtml = `<div class="mb-3"><span class="badge bg-light text-secondary border fw-normal opacity-50 px-2 py-1" style="font-size: 0.7rem;">${item.category}</span></div>`;
                 }
 
+                // *** START MODIFICATION FOR QUANTITY SELECTION ***
                 return `
                     <div class="col ${themeClass}">
-                        <div class="menu-card" id="card-${item.id}" data-selected-variant-idx="0">
+                        <div class="menu-card" id="card-${item.id}" data-selected-variant-idx="0" data-selected-quantity="1">
                             <div class="card-img-container">
                                 <img src="${imageUrl}" alt="${item.name}" loading="lazy" onerror="this.src='https://placehold.co/800x600?text=No+Image'">
                                 <div class="price-badge" id="price-${item.id}">₹${initialPrice}</div>
@@ -700,15 +679,28 @@
                                     ${variantsHtml}
                                 </div>
 
-                                <div class="mt-auto d-flex justify-content-end pt-3 border-top border-light">
+                                <div class="mt-auto d-flex justify-content-between align-items-center pt-3 border-top border-light">
+                                    
+                                    <div class="btn-group border rounded-3 overflow-hidden" role="group">
+                                        <button class="btn btn-light" style="width: 32px; font-size: 1.2rem;" onclick="changeCardQuantity('${item.id}', -1)">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <span id="qty-display-${item.id}" class="px-2 d-flex align-items-center fw-bold text-dark" style="min-width: 30px; justify-content: center; background-color: #f1f5f9;">
+                                            1
+                                        </span>
+                                        <button class="btn btn-light" style="width: 32px; font-size: 1.2rem;" onclick="changeCardQuantity('${item.id}', 1)">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
                                     <button class="add-btn" onclick="addToCart('${item.id}')">
-                                        <i class="bi bi-plus-lg"></i> Add to Order
+                                        <i class="bi bi-plus-lg"></i> Add
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
+                // *** END MODIFICATION FOR QUANTITY SELECTION ***
             }).join('');
         }
 
@@ -785,12 +777,36 @@
             });
         }
 
+        // *** NEW FUNCTION: Manage quantity display on the menu card ***
+        function changeCardQuantity(itemId, change) {
+            const card = document.getElementById(`card-${itemId}`);
+            const qtyDisplay = document.getElementById(`qty-display-${itemId}`);
+            let currentQty = parseInt(card.dataset.selectedQuantity);
+
+            let newQty = currentQty + change;
+            
+            // Quantity safety check: must be at least 1
+            if (newQty < 1) {
+                newQty = 1;
+            }
+
+            // Update the card's internal state and the display
+            card.dataset.selectedQuantity = newQty;
+            qtyDisplay.textContent = newQty;
+        }
+        // *** END NEW FUNCTION ***
+
+
         function addToCart(itemId) {
             const item = MENU_ITEMS.find(i => i.id === itemId);
             const card = document.getElementById(`card-${itemId}`);
             
             let selectedVariant = null;
             let finalPrice = item.price;
+            
+            // Get selected quantity from the card's data attribute
+            const selectedQuantity = parseInt(card.dataset.selectedQuantity); 
+
 
             if (item.variants) {
                 const idx = parseInt(card.dataset.selectedVariantIdx || 0);
@@ -798,12 +814,14 @@
                 finalPrice = selectedVariant.price;
             }
 
+            // Add the item to the cart, using the selectedQuantity
+            // Note: We use the quantity property here to track multiples
             cart.push({
                 itemId: item.id,
                 name: item.name,
                 selectedVariant: selectedVariant,
                 price: finalPrice,
-                quantity: 1
+                quantity: selectedQuantity // Use the selected quantity
             });
 
             updateCartCount();
@@ -811,9 +829,12 @@
             // Visual feedback
             const btn = card.querySelector('.add-btn');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check-lg"></i> Added';
+            btn.innerHTML = `<i class="bi bi-check-lg"></i> Added (${selectedQuantity})`;
             btn.style.backgroundColor = '#25D366';
             btn.style.color = 'white';
+            
+            // Reset quantity to 1 after adding to cart
+            changeCardQuantity(itemId, 1 - selectedQuantity); 
             
             setTimeout(() => {
                 btn.innerHTML = originalHTML;
@@ -823,10 +844,11 @@
         }
 
         function updateCartCount() {
-            const count = cart.length;
+            // Count all items (sum of all quantities)
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             const badge = document.getElementById('cart-count');
-            badge.textContent = count;
-            if(count > 0) badge.classList.remove('d-none');
+            badge.textContent = totalItems;
+            if(totalItems > 0) badge.classList.remove('d-none');
             else badge.classList.add('d-none');
         }
 
@@ -842,7 +864,9 @@
             const countHeader = document.getElementById('cart-item-count-header');
             const totalEl = document.getElementById('cart-total');
 
-            countHeader.textContent = `${cart.length} items`;
+            // Recalculate total items (sum of all quantities)
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            countHeader.textContent = `${totalItems} items`;
 
             if (cart.length === 0) {
                 container.innerHTML = '';
@@ -854,26 +878,67 @@
             emptyMsg.classList.add('d-none');
             footer.classList.remove('d-none');
 
-            // Calculate Total
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            // Calculate Grand Total (price * quantity)
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             totalEl.textContent = total;
 
             container.innerHTML = cart.map((item, index) => {
                 const variantLabel = item.selectedVariant ? `<span class="badge bg-secondary bg-opacity-10 text-secondary border fw-medium">${item.selectedVariant.label}</span>` : '';
                 return `
                     <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-2 rounded-4 shadow-sm border border-light">
-                        <div>
+                        <div style="flex-basis: 60%;">
                             <div class="fw-bold text-dark mb-1">${item.name}</div>
                             <div class="mb-1">${variantLabel}</div>
-                            <div class="fw-bold text-success">₹${item.price}</div>
+                            <div class="fw-bold text-success">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</div>
                         </div>
-                        <button class="btn btn-light text-danger rounded-circle p-2 border-0" onclick="removeFromCart(${index})">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        
+                        <div class="d-flex align-items-center gap-2" style="flex-basis: 40%; justify-content: flex-end;">
+                            <div class="btn-group border rounded-pill" role="group" style="height: 38px;">
+                                <button class="btn btn-sm btn-light p-0" style="width: 32px; font-size: 1.2rem;" onclick="updateQuantity(${index}, -1)">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="px-2 d-flex align-items-center fw-bold" style="min-width: 30px; justify-content: center; font-size: 0.95rem;">
+                                    ${item.quantity}
+                                </span>
+                                <button class="btn btn-sm btn-light p-0" style="width: 32px; font-size: 1.2rem;" onclick="updateQuantity(${index}, 1)">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="btn btn-light text-danger rounded-circle p-2 border-0" onclick="removeFromCart(${index})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
         }
+
+        // *** NEW/UPDATED FUNCTION: Manage quantity in cart modal ***
+        function updateQuantity(index, change) {
+            if (index >= 0 && index < cart.length) {
+                const currentQty = cart[index].quantity;
+
+                // Decrease quantity
+                if (change === -1) {
+                    if (currentQty > 1) {
+                        cart[index].quantity--;
+                    } else {
+                        // Remove item if quantity drops to zero
+                        removeFromCart(index);
+                        return;
+                    }
+                } 
+                // Increase quantity
+                else if (change === 1) {
+                    cart[index].quantity++;
+                }
+                
+                updateCartCount();
+                renderCartItems();
+            }
+        }
+        // *** END NEW/UPDATED FUNCTION ***
 
         function removeFromCart(index) {
             cart.splice(index, 1);
@@ -890,7 +955,8 @@
             
             if (cart.length === 0) return;
 
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            // Calculate total using quantity property
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             // Construct Message
             let message = `*New Order Received:*\n`;
@@ -903,7 +969,8 @@
             cart.forEach((item, index) => {
                 const variantText = item.selectedVariant ? ` (${item.selectedVariant.label})` : '';
                 message += `${index + 1}. ${item.name}${variantText}\n`;
-                message += `   Price: ₹${item.price} | Qty: 1\n`;
+                // Include the quantity in the WhatsApp message
+                message += `   Price: ₹${item.price} | *Qty: ${item.quantity}*\n`;
             });
 
             message += `--------------------------------\n`;
@@ -917,6 +984,5 @@
         }
 
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
