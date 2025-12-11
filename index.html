@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALFFMELLO | Premium Ordering</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --whatsapp: #25D366;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --border-radius: 24px;
+            --card-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-hover-shadow: 0 20px 40px -5px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            /* Subtle Mesh Gradient Background */
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,90%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,90%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,90%,1) 0, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--dark);
+            padding-bottom: 100px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5 {
+            letter-spacing: -0.025em;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navbar Glassmorphism */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Hero Section */
+        .hero-card {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            border-radius: var(--border-radius);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3);
+        }
+
+        .hero-pattern {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            opacity: 0.1;
+            background-image: radial-gradient(#ffffff 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* Search Input */
+        .search-container {
+            position: relative;
+        }
+        .custom-search {
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 50px;
+            padding: 12px 40px 12px 50px; /* Right padding increased for X button */
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .custom-search:focus {
+            border-color: var(--whatsapp);
+            box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1);
+            outline: none;
+        }
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        .search-clear-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .search-clear-btn:hover {
+            color: var(--dark);
+            background-color: #f1f5f9;
+        }
+
+        /* Categories */
+        .cat-btn {
+            border: none;
+            background: white;
+            color: #64748b;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            white-space: nowrap;
+        }
+        
+        .cat-btn:hover {
+            transform: translateY(-2px);
+            color: var(--dark);
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .cat-btn.active {
+            background: var(--dark);
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+
+        /* Mobile Optimization for Categories */
+        @media (max-width: 768px) {
+            .cat-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                flex-grow: 1; /* Make buttons expand to fill gaps nicely */
+                text-align: center;
+            }
+        }
+
+        /* Theme Specific Active States Override */
+        .theme-cakes .cat-btn.active { background: #0d9488; }
+        .theme-beverages .cat-btn.active { background: #0891b2; }
+        .theme-addons .cat-btn.active { background: #4f46e5; }
+        .theme-fries .cat-btn.active { background: #ca8a04; }
+        .theme-icecream .cat-btn.active { background: #d97706; }
+
+        /* Menu Cards */
+        .menu-card {
+            background: white;
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--card-shadow);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .card-img-container {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .menu-card:hover .card-img-container img {
+            transform: scale(1.1);
+        }
+
+        .price-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        /* Variant Buttons */
+        .variant-btn {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: transparent;
+            color: #64748b;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .variant-btn:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .variant-btn.active {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        /* Add Button */
+        .add-btn {
+            background: #f1f5f9;
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .add-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .add-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Cart Badge */
+        .cart-float-btn {
+            position: relative;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+        
+        .cart-float-btn:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border: none;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--whatsapp);
+            box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Theme Accents for Cards */
+        .theme-cakes .variant-btn.active, .theme-cakes .add-btn:hover { background-color: #0d9488; color: white; border-color: #0d9488; }
+        .theme-cakes .price-badge { color: #0f766e; }
+
+        .theme-beverages .variant-btn.active, .theme-beverages .add-btn:hover { background-color: #0891b2; color: white; border-color: #0891b2; }
+        .theme-beverages .price-badge { color: #155e75; }
+
+        .theme-addons .variant-btn.active, .theme-addons .add-btn:hover { background-color: #4f46e5; color: white; border-color: #4f46e5; }
+        .theme-addons .price-badge { color: #4338ca; }
+
+        .theme-fries .variant-btn.active, .theme-fries .add-btn:hover { background-color: #ca8a04; color: white; border-color: #ca8a04; }
+        .theme-fries .price-badge { color: #854d0e; }
+
+        .theme-icecream .variant-btn.active, .theme-icecream .add-btn:hover { background-color: #d97706; color: white; border-color: #d97706; }
+        .theme-icecream .price-badge { color: #9a3412; }
+
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.560.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand navbar-light navbar-glass sticky-top mb-4 py-3">
+        <div class="container-xl">
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+                <div class="bg-dark text-white p-2 rounded-4 shadow-sm d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                    <i class="bi bi-cup-hot-fill fs-5"></i>
+                </div>
+                <div style="line-height: 1;">
+                    <div class="fw-black fs-4 fw-bold text-dark tracking-tight">WALFFMELLO</div>
+                    <div class="text-uppercase text-muted fw-bold mt-1" style="font-size: 0.65rem; letter-spacing: 2px;">Premium & Fresh</div>
+                </div>
+            </a>
+
+            <!-- Desktop Search -->
+            <div class="d-none d-md-block flex-grow-1 mx-5" style="max-width: 500px;">
+                <div class="search-container">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" id="desktop-search" class="form-control custom-search" placeholder="Search for cakes, coffee, snacks...">
+                    <button id="desktop-search-clear" class="search-clear-btn d-none" onclick="clearSearch('desktop-search', 'desktop-search-clear')">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cart Trigger -->
+            <button class="cart-float-btn ms-auto ms-md-0" onclick="openCart()">
+                <i class="bi bi-bag-fill fs-5 text-dark"></i>
+                <span id="cart-count" class="cart-badge d-none">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container-xl px-4">
+        
+        <!-- Hero Section (Welcome) -->
+        <div class="hero-card mb-5 d-none d-md-block">
+            <div class="hero-pattern"></div>
+            <div class="row align-items-center position-relative z-1">
+                <div class="col-lg-7">
+                    <span class="badge bg-white bg-opacity-20 backdrop-blur border border-white border-opacity-25 rounded-pill px-3 py-2 mb-3">👋 Welcome to CafeConnect</span>
+                    <h1 class="display-4 fw-bold font-serif mb-3">Craving something <br>delicious today?</h1>
+                    <p class="lead text-white-50 mb-0">Freshly baked cakes, aromatic coffee, and crispy snacks waiting for you.</p>
+                </div>
+                <div class="col-lg-5 text-end d-none d-lg-block">
+                    <i class="bi bi-stars display-1 text-white opacity-25"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Search -->
+        <div class="d-md-none mb-4">
+            <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="mobile-search" class="form-control custom-search" placeholder="What are you craving?">
+                <button id="mobile-search-clear" class="search-clear-btn d-none" onclick="clearSearch('mobile-search', 'mobile-search-clear')">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="mb-4">
+            <div id="category-container" class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                <!-- Categories injected by JS -->
+            </div>
+        </div>
+
+        <!-- Section Title -->
+        <div class="d-flex align-items-end gap-3 mb-4 mt-2">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1.5px;">Currently Viewing</div>
+                <h2 id="section-title" class="fw-bold m-0 text-dark display-6 font-serif">Cakes</h2>
+            </div>
+            <div class="border-bottom flex-grow-1 mb-2 opacity-25 border-dark"></div>
+        </div>
+
+        <!-- Menu Grid -->
+        <div id="menu-grid" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
+            <!-- Menu Items injected by JS -->
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="text-center py-5 d-none">
+            <div class="bg-white d-inline-block p-5 rounded-circle mb-4 shadow-sm">
+                <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+            </div>
+            <h3 class="fw-bold text-dark">No items found</h3>
+            <p class="text-muted">We couldn't find what you're looking for.</p>
+            <button class="btn btn-dark rounded-pill px-4 py-2 fw-bold" onclick="resetFilters()">View Full Menu</button>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content shadow-lg">
+                <!-- Header -->
+                <div class="modal-header border-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-white bg-opacity-25 p-2 rounded-3">
+                            <i class="bi bi-basket2-fill fs-5 text-white"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold lh-1">Your Order</h5>
+                            <small class="text-white-50" id="cart-item-count-header">0 items</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body bg-light p-0">
+                    <div id="cart-items-container" class="p-3">
+                        <!-- Cart Items injected here -->
+                    </div>
+                    
+                    <div id="cart-empty-msg" class="text-center py-5 d-none">
+                        <div class="mb-3 opacity-25">
+                            <i class="bi bi-cart3 display-1"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">Your cart is empty</h5>
+                        <p class="text-muted small mb-4">Looks like you haven't added anything yet.</p>
+                        <button class="btn btn-outline-success rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Start Ordering</button>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div id="cart-footer" class="modal-footer flex-column align-items-stretch border-top-0 p-4 bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+                    <div class="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom border-dashed">
+                        <span class="text-muted small fw-bold text-uppercase tracking-wider">Total Amount</span>
+                        <span class="fs-2 fw-bold text-dark font-serif">₹<span id="cart-total">0</span></span>
+                    </div>
+
+                    <form id="order-form" onsubmit="handleCheckout(event)">
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Full Name</label>
+                                <input type="text" id="customer-name" class="form-control rounded-3 py-2 bg-light border-0" placeholder="e.g. Rahul Sharma" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Mobile Number</label>
+                                <input type="tel" id="customer-contact" class="form-control rounded-3 py-2 bg-light border-0" placeholder="e.g. 9876543210" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Dining Preference</label>
+                                <div class="d-flex gap-2">
+                                    <input type="radio" class="btn-check" name="orderType" id="type-takeaway" value="Takeaway" checked>
+                                    <label class="btn btn-outline-secondary flex-fill rounded-3 py-2 fw-bold border-2" for="type-takeaway">
+                                        <i class="bi bi-bag me-1"></i> Takeaway
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="orderType" id="type-table" value="Table Booking">
+                                    <label class="btn btn-outline-secondary flex-fill rounded-3 py-2 fw-bold border-2" for="type-table">
+                                        <i class="bi bi-shop me-1"></i> Dine-in
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn w-100 py-3 rounded-4 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-lg text-white transition-all hover-scale" style="background: linear-gradient(135deg, #128C7E 0%, #25D366 100%); border: none;">
+                            <span>Place Order on WhatsApp</span>
+                            <i class="bi bi-whatsapp fs-5"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Application Script -->
+    <script>
+        // --- Constants & Data ---
+        const CATEGORIES = ["Cakes", "Beverages", "Add-ons", "Fries & Sides", "Ice Creams"];
+        
+        const CATEGORY_THEMES = {
+            "Cakes": "theme-cakes",
+            "Beverages": "theme-beverages",
+            "Add-ons": "theme-addons",
+            "Fries & Sides": "theme-fries",
+            "Ice Creams": "theme-icecream"
+        };
+
+        const MENU_ITEMS = [
+            // Cakes
+            { id: 'c1', name: 'Almond Brownie', category: 'Cakes', variants: [{ label: 'Single Layer', price: 360 }, { label: 'Double Layer', price: 600 }] },
+            { id: 'c2', name: 'Cream N Cookie', category: 'Cakes', variants: [{ label: 'Single Layer', price: 320 }, { label: 'Double Layer', price: 520 }] },
+            { id: 'c3', name: 'Triple Attack', category: 'Cakes', variants: [{ label: 'Single Layer', price: 320 }, { label: 'Double Layer', price: 520 }] },
+            { id: 'c4', name: 'Berry Redvelvet', category: 'Cakes', variants: [{ label: 'Single Layer', price: 350 }, { label: 'Double Layer', price: 550 }] },
+            // Beverages
+            { id: 'b1', name: 'Classic Vanilla', category: 'Beverages', price: 130 },
+            { id: 'b2', name: 'Nutella Frappe', category: 'Beverages', price: 150 },
+            { id: 'b3', name: 'Dark Choco Tempt', category: 'Beverages', price: 150 },
+            { id: 'b4', name: 'Belgium Chocolate', category: 'Beverages', price: 150 },
+            { id: 'b5', name: 'Kitkat Blend', category: 'Beverages', price: 140 },
+            { id: 'b6', name: 'Cookie Cream Frappe', category: 'Beverages', price: 150 },
+            { id: 'b7', name: 'Signature Cold Coffee', category: 'Beverages', price: 130 },
+            { id: 'b8', name: 'Choco Butterscotch', category: 'Beverages', price: 140 },
+            { id: 'b9', name: 'Triple Choco Delight', category: 'Beverages', price: 170 },
+            { id: 'b10', name: 'Nutty Hazel', category: 'Beverages', price: 160 },
+            { id: 'b11', name: 'Cheese Cream Strawberry', category: 'Beverages', price: 160 },
+            { id: 'b12', name: 'Blueberry Fusion', category: 'Beverages', price: 160 },
+            { id: 'b13', name: 'Caramel Suit', category: 'Beverages', price: 150 },
+            // Add-ons
+            { id: 'a1', name: 'Ice Cream', category: 'Add-ons', price: 40 },
+            { id: 'a2', name: 'Extra Filling', category: 'Add-ons', price: 30 },
+            { id: 'a3', name: 'Nutella', category: 'Add-ons', price: 40 },
+            { id: 'a4', name: 'Kitkat', category: 'Add-ons', price: 30 },
+            { id: 'a5', name: 'Almonds', category: 'Add-ons', price: 20 },
+            { id: 'a6', name: 'Oreo', category: 'Add-ons', price: 30 },
+            // Fries
+            { id: 'f1', name: 'Classic Salted Fries', category: 'Fries & Sides', variants: [{ label: 'Regular', price: 79 }, { label: 'Medium', price: 119 }, { label: 'Large', price: 139 }] },
+            { id: 'f2', name: 'Mexican Cheesy Fries', category: 'Fries & Sides', variants: [{ label: 'Regular', price: 94 }, { label: 'Medium', price: 129 }, { label: 'Large', price: 149 }] },
+            { id: 'f3', name: 'Piri Piri Fries', category: 'Fries & Sides', variants: [{ label: 'Regular', price: 94 }, { label: 'Medium', price: 129 }, { label: 'Large', price: 149 }] },
+            { id: 'f4', name: 'Jalapeno Cheese Poppers (6pc)', category: 'Fries & Sides', price: 109 },
+            { id: 'f5', name: 'Cheese Corn Tots (6pc)', category: 'Fries & Sides', price: 109 },
+            { id: 'f6', name: 'Loaded Finger Sticks (6pc)', category: 'Fries & Sides', price: 129 },
+            // Ice Creams
+            { id: 'i1', name: 'Vintage Vanilla', category: 'Ice Creams', variants: [{ label: 'Regular', price: 95 }, { label: 'Large', price: 140 }, { label: 'Sundae', price: 160 }] },
+            { id: 'i2', name: 'Belgium Chocolate', category: 'Ice Creams', variants: [{ label: 'Regular', price: 110 }, { label: 'Large', price: 155 }, { label: 'Sundae', price: 175 }] },
+            { id: 'i3', name: 'Butterscotch Bounty', category: 'Ice Creams', variants: [{ label: 'Regular', price: 105 }, { label: 'Large', price: 150 }, { label: 'Sundae', price: 170 }] },
+            { id: 'i4', name: "Cookies 'N' Cream", category: 'Ice Creams', variants: [{ label: 'Regular', price: 110 }, { label: 'Large', price: 155 }, { label: 'Sundae', price: 175 }] },
+            { id: 'i5', name: 'Tutti Fruity Orange', category: 'Ice Creams', variants: [{ label: 'Regular', price: 105 }, { label: 'Large', price: 150 }, { label: 'Sundae', price: 170 }] },
+            { id: 'i6', name: 'Choco Brownie', category: 'Ice Creams', variants: [{ label: 'Regular', price: 115 }, { label: 'Large', price: 160 }, { label: 'Sundae', price: 180 }] },
+            { id: 'i7', name: 'Black Currant', category: 'Ice Creams', variants: [{ label: 'Regular', price: 110 }, { label: 'Large', price: 155 }, { label: 'Sundae', price: 175 }] },
+            { id: 'i8', name: 'Alphonso Mango', category: 'Ice Creams', variants: [{ label: 'Regular', price: 110 }, { label: 'Large', price: 155 }, { label: 'Sundae', price: 175 }] },
+            { id: 'i9', name: 'Musk Melon', category: 'Ice Creams', variants: [{ label: 'Regular', price: 120 }, { label: 'Large', price: 165 }, { label: 'Sundae', price: 185 }] },
+            { id: 'i10', name: 'Strawberry', category: 'Ice Creams', variants: [{ label: 'Regular', price: 105 }, { label: 'Large', price: 150 }, { label: 'Sundae', price: 170 }] },
+            { id: 'i11', name: 'Californian Pistachio', category: 'Ice Creams', variants: [{ label: 'Regular', price: 110 }, { label: 'Large', price: 155 }, { label: 'Sundae', price: 175 }] },
+            { id: 'i12', name: 'Creamy Almond', category: 'Ice Creams', variants: [{ label: 'Regular', price: 125 }, { label: 'Large', price: 175 }, { label: 'Sundae', price: 195 }] },
+            { id: 'i13', name: 'Arabian Kulfi', category: 'Ice Creams', variants: [{ label: 'Regular', price: 125 }, { label: 'Large', price: 175 }, { label: 'Sundae', price: 195 }] },
+            { id: 'i14', name: 'Afghan Dry Fruits', category: 'Ice Creams', variants: [{ label: 'Regular', price: 120 }, { label: 'Large', price: 165 }, { label: 'Sundae', price: 185 }] },
+        ];
+
+        // --- State ---
+        let activeCategory = "Cakes";
+        let searchTerm = "";
+        let cart = [];
+        let cartModalInstance = null;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderMenu();
+            setupSearchListeners();
+            cartModalInstance = new bootstrap.Modal(document.getElementById('cartModal'));
+        });
+
+        // --- Rendering Logic ---
+
+        function renderCategories() {
+            const container = document.getElementById('category-container');
+            container.innerHTML = CATEGORIES.map(cat => {
+                const isActive = cat === activeCategory;
+                const themeClass = CATEGORY_THEMES[cat];
+                return `
+                    <button 
+                        class="cat-btn ${isActive ? 'active' : ''} ${isActive ? themeClass : ''}"
+                        onclick="setCategory('${cat}')"
+                    >
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('menu-grid');
+            const titleEl = document.getElementById('section-title');
+            const emptyState = document.getElementById('empty-state');
+
+            // Filter logic
+            const filtered = MENU_ITEMS.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+                if (searchTerm.length > 0) return matchesSearch;
+                return item.category === activeCategory;
+            });
+
+            // Update title
+            titleEl.textContent = searchTerm ? `Results for "${searchTerm}"` : activeCategory;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('d-none');
+                return;
+            } else {
+                emptyState.classList.add('d-none');
+            }
+
+            // Render Items
+            grid.innerHTML = filtered.map(item => {
+                const themeClass = CATEGORY_THEMES[item.category] || '';
+                const hasVariants = item.variants && item.variants.length > 0;
+                
+                // Default to first variant or base price
+                const initialPrice = hasVariants ? item.variants[0].price : item.price;
+                
+                // Image URL
+                const imagePrompt = encodeURIComponent(`${item.name} ${item.category} food, delicious, professional photography, bright lighting`);
+                const imageUrl = `https://image.pollinations.ai/prompt/${imagePrompt}?width=800&height=600&nologo=true&seed=${item.id}&model=flux`;
+                
+                // Build Variants HTML
+                let variantsHtml = '';
+                if (hasVariants) {
+                    variantsHtml = `
+                        <div class="mb-3">
+                            <label class="d-block small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 1px;">Size / Layer</label>
+                            <div class="d-flex flex-wrap gap-1" id="variants-${item.id}">
+                                ${item.variants.map((v, idx) => `
+                                    <button 
+                                        class="variant-btn ${idx === 0 ? 'active' : ''}" 
+                                        onclick="selectVariant('${item.id}', ${idx}, ${v.price})"
+                                    >
+                                        ${v.label}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    variantsHtml = `<div class="mb-3"><span class="badge bg-light text-secondary border fw-normal opacity-50 px-2 py-1" style="font-size: 0.7rem;">${item.category}</span></div>`;
+                }
+
+                return `
+                    <div class="col ${themeClass}">
+                        <div class="menu-card" id="card-${item.id}" data-selected-variant-idx="0">
+                            <div class="card-img-container">
+                                <img src="${imageUrl}" alt="${item.name}" loading="lazy" onerror="this.src='https://placehold.co/800x600?text=No+Image'">
+                                <div class="price-badge" id="price-${item.id}">₹${initialPrice}</div>
+                            </div>
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold mb-1 fs-5">${item.name}</h5>
+                                
+                                <div class="mt-3 flex-grow-1">
+                                    ${variantsHtml}
+                                </div>
+
+                                <div class="mt-auto d-flex justify-content-end pt-3 border-top border-light">
+                                    <button class="add-btn" onclick="addToCart('${item.id}')">
+                                        <i class="bi bi-plus-lg"></i> Add to Order
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- Actions ---
+
+        function setCategory(cat) {
+            activeCategory = cat;
+            searchTerm = "";
+            clearSearchInputs();
+            renderCategories();
+            renderMenu();
+        }
+
+        function clearSearchInputs() {
+            updateSearchInput('desktop-search', '');
+            updateSearchInput('mobile-search', '');
+        }
+
+        function updateSearchInput(id, value) {
+            const input = document.getElementById(id);
+            if(input) {
+                input.value = value;
+                const clearBtnId = id + '-clear';
+                toggleClearButton(id, clearBtnId);
+            }
+        }
+
+        function setupSearchListeners() {
+            const handleSearch = (e) => {
+                searchTerm = e.target.value;
+                const btnId = e.target.id + '-clear';
+                toggleClearButton(e.target.id, btnId);
+                renderMenu();
+            };
+            document.getElementById('desktop-search').addEventListener('input', handleSearch);
+            document.getElementById('mobile-search').addEventListener('input', handleSearch);
+        }
+
+        function toggleClearButton(inputId, btnId) {
+            const input = document.getElementById(inputId);
+            const btn = document.getElementById(btnId);
+            if (input.value.length > 0) {
+                btn.classList.remove('d-none');
+            } else {
+                btn.classList.add('d-none');
+            }
+        }
+
+        function clearSearch(inputId, btnId) {
+            updateSearchInput(inputId, '');
+            searchTerm = '';
+            renderMenu();
+        }
+
+        function resetFilters() {
+            setCategory('Cakes');
+        }
+
+        function selectVariant(itemId, variantIdx, price) {
+            // Update UI State
+            const card = document.getElementById(`card-${itemId}`);
+            card.dataset.selectedVariantIdx = variantIdx;
+            
+            // Update Price Display
+            const priceTag = document.getElementById(`price-${itemId}`);
+            priceTag.textContent = `₹${price}`;
+
+            // Update Buttons Style
+            const container = document.getElementById(`variants-${itemId}`);
+            const buttons = container.getElementsByClassName('variant-btn');
+            Array.from(buttons).forEach((btn, idx) => {
+                if(idx === variantIdx) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        function addToCart(itemId) {
+            const item = MENU_ITEMS.find(i => i.id === itemId);
+            const card = document.getElementById(`card-${itemId}`);
+            
+            let selectedVariant = null;
+            let finalPrice = item.price;
+
+            if (item.variants) {
+                const idx = parseInt(card.dataset.selectedVariantIdx || 0);
+                selectedVariant = item.variants[idx];
+                finalPrice = selectedVariant.price;
+            }
+
+            cart.push({
+                itemId: item.id,
+                name: item.name,
+                selectedVariant: selectedVariant,
+                price: finalPrice,
+                quantity: 1
+            });
+
+            updateCartCount();
+            
+            // Visual feedback
+            const btn = card.querySelector('.add-btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check-lg"></i> Added';
+            btn.style.backgroundColor = '#25D366';
+            btn.style.color = 'white';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+            }, 1000);
+        }
+
+        function updateCartCount() {
+            const count = cart.length;
+            const badge = document.getElementById('cart-count');
+            badge.textContent = count;
+            if(count > 0) badge.classList.remove('d-none');
+            else badge.classList.add('d-none');
+        }
+
+        function openCart() {
+            renderCartItems();
+            cartModalInstance.show();
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-container');
+            const emptyMsg = document.getElementById('cart-empty-msg');
+            const footer = document.getElementById('cart-footer');
+            const countHeader = document.getElementById('cart-item-count-header');
+            const totalEl = document.getElementById('cart-total');
+
+            countHeader.textContent = `${cart.length} items`;
+
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                emptyMsg.classList.remove('d-none');
+                footer.classList.add('d-none');
+                return;
+            }
+
+            emptyMsg.classList.add('d-none');
+            footer.classList.remove('d-none');
+
+            // Calculate Total
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            totalEl.textContent = total;
+
+            container.innerHTML = cart.map((item, index) => {
+                const variantLabel = item.selectedVariant ? `<span class="badge bg-secondary bg-opacity-10 text-secondary border fw-medium">${item.selectedVariant.label}</span>` : '';
+                return `
+                    <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-2 rounded-4 shadow-sm border border-light">
+                        <div>
+                            <div class="fw-bold text-dark mb-1">${item.name}</div>
+                            <div class="mb-1">${variantLabel}</div>
+                            <div class="fw-bold text-success">₹${item.price}</div>
+                        </div>
+                        <button class="btn btn-light text-danger rounded-circle p-2 border-0" onclick="removeFromCart(${index})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            renderCartItems();
+        }
+
+        function handleCheckout(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('customer-name').value;
+            const contact = document.getElementById('customer-contact').value;
+            const orderType = document.querySelector('input[name="orderType"]:checked').value;
+            
+            if (cart.length === 0) return;
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+            // Construct Message
+            let message = `*New Order Received:*\n`;
+            message += `Name: ${name}\n`;
+            message += `Contact: ${contact}\n`;
+            message += `Order Type: ${orderType}\n`;
+            message += `--------------------------------\n`;
+            message += `*Items:*\n`;
+
+            cart.forEach((item, index) => {
+                const variantText = item.selectedVariant ? ` (${item.selectedVariant.label})` : '';
+                message += `${index + 1}. ${item.name}${variantText}\n`;
+                message += `   Price: ₹${item.price} | Qty: 1\n`;
+            });
+
+            message += `--------------------------------\n`;
+            message += `*Total Amount: ₹${total}*`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/916383152819?text=${encodedMessage}`;
+
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
